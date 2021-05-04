@@ -1,9 +1,12 @@
 package com.recipe.RecipeProject.controller;
 
 import com.recipe.RecipeProject.model.Recipe;
-import com.recipe.RecipeProject.services.CategoryService;
+import com.recipe.RecipeProject.repositories.CategoryRepository;
+import com.recipe.RecipeProject.repositories.RecipeRepository;
+import com.recipe.RecipeProject.repositories.UnitOfMeasureRepository;
+import com.recipe.RecipeProject.services.CategoryServiceImpl;
 import com.recipe.RecipeProject.services.RecipeService;
-import com.recipe.RecipeProject.services.UnitOfMeasureService;
+import com.recipe.RecipeProject.services.UnitOfMeasureServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -18,18 +21,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class IndexControllerTest {
 
     @Mock
-    private RecipeService recipeService;
+    private RecipeRepository recipeRepository;
     @Mock
-    private CategoryService categoryService;
+    private CategoryRepository categoryRepository;
     @Mock
-    private UnitOfMeasureService unitOfMeasureService;
+    private UnitOfMeasureRepository unitOfMeasureRepository;
 
 IndexController controller;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        controller= new IndexController(recipeService, categoryService, unitOfMeasureService);
+        controller= new IndexController(recipeRepository, categoryRepository, unitOfMeasureRepository);
     }
 
     @Test
@@ -45,7 +48,7 @@ IndexController controller;
 
         assertEquals(recipeSet.size(),1);
 
-        Mockito.verify(recipeService,Mockito.times(1)).getRecipe();
+        Mockito.verify(recipeRepository,Mockito.times(1)).findAll();
 
 
 

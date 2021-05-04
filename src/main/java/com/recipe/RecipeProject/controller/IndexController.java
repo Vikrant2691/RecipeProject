@@ -2,42 +2,51 @@ package com.recipe.RecipeProject.controller;
 
 import com.recipe.RecipeProject.model.Category;
 import com.recipe.RecipeProject.model.Recipe;
-import com.recipe.RecipeProject.services.CategoryService;
+import com.recipe.RecipeProject.repositories.CategoryRepository;
+import com.recipe.RecipeProject.repositories.RecipeRepository;
+import com.recipe.RecipeProject.repositories.UnitOfMeasureRepository;
+import com.recipe.RecipeProject.services.CategoryServiceImpl;
 import com.recipe.RecipeProject.services.RecipeService;
-import com.recipe.RecipeProject.services.UnitOfMeasureService;
+import com.recipe.RecipeProject.services.UnitOfMeasureServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
 @RestController
 @Slf4j
+@CrossOrigin
 public class IndexController {
 
-    private final RecipeService recipeService;
-    private final CategoryService categoryService;
-    private final UnitOfMeasureService unitOfMeasureService;
+    private final RecipeRepository recipeRepository;
+    private final CategoryRepository categoryRepository;
+    private final UnitOfMeasureRepository unitOfMeasureRepository;
 
-    public IndexController(RecipeService recipeService, CategoryService categoryService, UnitOfMeasureService unitOfMeasureService) {
-        this.recipeService = recipeService;
-        this.categoryService = categoryService;
-        this.unitOfMeasureService = unitOfMeasureService;
+    public IndexController(RecipeRepository recipeRepository, CategoryRepository categoryRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
+        this.recipeRepository = recipeRepository;
+        this.categoryRepository = categoryRepository;
+        this.unitOfMeasureRepository = unitOfMeasureRepository;
     }
 
     @GetMapping(path = "/getrecipes")
-    Iterable<Recipe> getRecipies() {
+    Set<Recipe> getRecipies() {
 
-        return recipeService.getRecipe();
+        Set<Recipe> recipes = new HashSet<>();
+
+        recipeRepository.findAll().forEach(recipes::add);
+        return recipes;
 
 
     }
 
     @GetMapping(path = "/getcategories")
-    Set<Category> getCategories() {
+    Iterable<Category> getCategories() {
 
-        return categoryService.getCategories();
+        return categoryRepository.findAll();
 
 
     }
@@ -45,7 +54,7 @@ public class IndexController {
     @GetMapping(path = "/getuom")
     Iterable<Recipe> getUnitOFMeasures() {
 
-        return recipeService.getRecipe();
+        return recipeRepository.findAll();
 
 
     }
