@@ -22,4 +22,8 @@ public class CategoryServiceImpl {
         return categories;
     }
 
+    public Category getByCategoryName(String categoryName){
+        return categoryRepository.findByCategoryName(categoryName).orElse(null);
+    }
+
 }

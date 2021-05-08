@@ -1,19 +1,18 @@
 package com.recipe.RecipeProject.controller;
 
+import com.recipe.RecipeProject.command.RecipeCommand;
+import com.recipe.RecipeProject.converters.RecipeToRecipeCommand;
 import com.recipe.RecipeProject.model.Category;
+import com.recipe.RecipeProject.model.Ingredient;
 import com.recipe.RecipeProject.model.Recipe;
-import com.recipe.RecipeProject.repositories.CategoryRepository;
-import com.recipe.RecipeProject.repositories.RecipeRepository;
 import com.recipe.RecipeProject.repositories.UnitOfMeasureRepository;
 import com.recipe.RecipeProject.services.CategoryServiceImpl;
-import com.recipe.RecipeProject.services.RecipeService;
-import com.recipe.RecipeProject.services.UnitOfMeasureServiceImpl;
+import com.recipe.RecipeProject.services.RecipeServiceImpl;
+import com.recipe.RecipeProject.services.UpdateService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -22,31 +21,58 @@ import java.util.Set;
 @CrossOrigin
 public class IndexController {
 
-    private final RecipeRepository recipeRepository;
-    private final CategoryRepository categoryRepository;
+    private final RecipeServiceImpl recipeService;
+    private final CategoryServiceImpl categoryService;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
+    private final UpdateService updateService;
+    private final RecipeToRecipeCommand recipeToRecipeCommand;
 
-    public IndexController(RecipeRepository recipeRepository, CategoryRepository categoryRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
-        this.recipeRepository = recipeRepository;
-        this.categoryRepository = categoryRepository;
+    public IndexController(RecipeServiceImpl recipeService, CategoryServiceImpl categoryService, UnitOfMeasureRepository unitOfMeasureRepository, UpdateService updateService, RecipeToRecipeCommand recipeToRecipeCommand) {
+        this.recipeService = recipeService;
+        this.categoryService = categoryService;
         this.unitOfMeasureRepository = unitOfMeasureRepository;
+        this.updateService = updateService;
+        this.recipeToRecipeCommand = recipeToRecipeCommand;
     }
 
     @GetMapping(path = "/getrecipes")
-    Set<Recipe> getRecipies() {
+    Set<Recipe> getRecipes() {
 
-        Set<Recipe> recipes = new HashSet<>();
 
-        recipeRepository.findAll().forEach(recipes::add);
-        return recipes;
+        return recipeService.getRecipe();
+    }
+
+
+    @GetMapping(path = "/getrecipe/{id}")
+    RecipeCommand getRecipe(@PathVariable Long id) {
+
+        return recipeService.findById(id);
+    }
+
+    @GetMapping(path = "/getcategories")
+    Set<Category> getCategories() {
+
+        return categoryService.getCategories();
 
 
     }
 
-    @GetMapping(path = "/getcategories")
-    Iterable<Category> getCategories() {
+    @GetMapping(path = "/getrecipe/{recipeId}/ingredients")
+    Set<Ingredient> getIngredients(@PathVariable("recipeId") Long recipeId) {
 
-        return categoryRepository.findAll();
+        return recipeService.getIngredient(recipeId);
+
+
+    }
+
+    @GetMapping(path = "/getrecipe/{recipeId}/ingredient/{ingredientId}")
+    Ingredient getIngredient(@PathVariable("recipeId") Long recipeId, @PathVariable("ingredientId") Long ingredientId) {
+
+        return recipeService.getIngredient(recipeId)
+                .stream()
+                .filter(ingredient -> ingredient.getId().equals(ingredientId))
+                .findFirst()
+                .orElse(null);
 
 
     }
@@ -54,9 +80,30 @@ public class IndexController {
     @GetMapping(path = "/getuom")
     Iterable<Recipe> getUnitOFMeasures() {
 
-        return recipeRepository.findAll();
+        return recipeService.getRecipe();
 
 
+    }
+
+
+    @PatchMapping(path = "/updaterecipe/{id}", consumes = "application/json")
+    public ResponseEntity<RecipeCommand> putRecipe(@RequestBody Recipe recipe, @PathVariable("id") Long id) {
+
+        RecipeCommand currentRecipe = recipeService.findById(id);
+        if (currentRecipe == null)
+            return ResponseEntity.notFound().build();
+
+        updateService.updateRecipe(recipe, id);
+
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(path = "/saverecipes", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<RecipeCommand> addMember(@RequestBody RecipeCommand recipeCommand) {
+        recipeService.save(recipeCommand);
+
+        return ResponseEntity.ok().build();
     }
 
 }

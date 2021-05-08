@@ -1,5 +1,7 @@
 package com.recipe.RecipeProject.services;
 
+import com.recipe.RecipeProject.converters.RecipeCommandToRecipe;
+import com.recipe.RecipeProject.converters.RecipeToRecipeCommand;
 import com.recipe.RecipeProject.model.Recipe;
 import com.recipe.RecipeProject.repositories.RecipeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,11 +20,15 @@ class RecipeServiceImplTest {
     private RecipeService recipeService;
     @Mock
     private RecipeRepository recipeRepository;
+    @Mock
+    private RecipeToRecipeCommand recipeToRecipeCommand;
+    @Mock
+    private RecipeCommandToRecipe recipeCommandToRecipe;
 
 
     @BeforeEach
     void setUp() {
-        recipeService= new RecipeServiceImpl(recipeRepository);
+        recipeService = new RecipeServiceImpl(recipeRepository, recipeToRecipeCommand, recipeCommandToRecipe);
         MockitoAnnotations.openMocks(this);
     }
 
@@ -36,11 +41,11 @@ class RecipeServiceImplTest {
 
         Mockito.when(recipeRepository.findAll()).thenReturn(recipeData);
 
-        Set<Recipe> recipes= (Set<Recipe>) recipeRepository.findAll();
+        Set<Recipe> recipes = (Set<Recipe>) recipeRepository.findAll();
 
 
-        assertEquals(recipes.size(),1);
-        Mockito.verify(recipeRepository,Mockito.times(1)).findAll();
+        assertEquals(recipes.size(), 1);
+        Mockito.verify(recipeRepository, Mockito.times(1)).findAll();
 
     }
 }
