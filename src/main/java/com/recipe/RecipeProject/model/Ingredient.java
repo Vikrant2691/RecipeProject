@@ -2,6 +2,7 @@ package com.recipe.RecipeProject.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Ingredient {
 
     @Id
@@ -30,6 +32,12 @@ public class Ingredient {
         this.description = description;
         this.amount = amount;
         this.recipe = recipe;
+        this.unitOfMeasure = unitOfMeasure;
+    }
+
+    public Ingredient(String description, BigDecimal amount, UnitOfMeasure unitOfMeasure) {
+        this.description = description;
+        this.amount = amount;
         this.unitOfMeasure = unitOfMeasure;
     }
 }

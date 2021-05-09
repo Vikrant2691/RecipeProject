@@ -2,10 +2,12 @@ package com.recipe.RecipeProject.services;
 
 import com.recipe.RecipeProject.model.Category;
 import com.recipe.RecipeProject.repositories.CategoryRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Service
 public class CategoryServiceImpl {
 
     private final CategoryRepository categoryRepository;

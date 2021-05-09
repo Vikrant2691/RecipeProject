@@ -8,3 +8,5 @@ insert into unit_of_measure (uom) values ('Cup');
 insert into unit_of_measure (uom) values ('Pinch');
 insert into unit_of_measure (uom) values ('Ounce');
 insert into unit_of_measure (uom) values ('Each');
+insert into unit_of_measure (uom) values ('Dash');
+insert into unit_of_measure (uom) values ('Pint');

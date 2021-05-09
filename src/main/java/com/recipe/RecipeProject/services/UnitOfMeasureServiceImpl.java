@@ -2,10 +2,12 @@ package com.recipe.RecipeProject.services;
 
 import com.recipe.RecipeProject.model.UnitOfMeasure;
 import com.recipe.RecipeProject.repositories.UnitOfMeasureRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
 
+@Service
 public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
 
     private final UnitOfMeasureRepository unitOfMeasureRepository;
@@ -28,6 +30,11 @@ public class UnitOfMeasureServiceImpl implements UnitOfMeasureService {
     public Optional<UnitOfMeasure> findByDescription(String description) {
         return unitOfMeasureRepository.findByUom(description);
 
+    }
+
+    @Override
+    public Optional<UnitOfMeasure> findById(Long Id) {
+        return unitOfMeasureRepository.findById(Id);
     }
 
 }

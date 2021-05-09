@@ -60,7 +60,7 @@ public class IndexController {
     @GetMapping(path = "/getrecipe/{recipeId}/ingredients")
     Set<Ingredient> getIngredients(@PathVariable("recipeId") Long recipeId) {
 
-        return recipeService.getIngredient(recipeId);
+        return recipeService.getIngredients(recipeId);
 
 
     }
@@ -68,11 +68,15 @@ public class IndexController {
     @GetMapping(path = "/getrecipe/{recipeId}/ingredient/{ingredientId}")
     Ingredient getIngredient(@PathVariable("recipeId") Long recipeId, @PathVariable("ingredientId") Long ingredientId) {
 
-        return recipeService.getIngredient(recipeId)
-                .stream()
-                .filter(ingredient -> ingredient.getId().equals(ingredientId))
-                .findFirst()
-                .orElse(null);
+        return recipeService.getIngredient(recipeId,ingredientId);
+
+
+    }
+
+    @GetMapping(path = "/getrecipe/{recipeId}/ingredient/{ingredientId}/update")
+    Ingredient updateIngredient(@PathVariable("recipeId") Long recipeId, @PathVariable("ingredientId") Long ingredientId, Ingredient ingredient) {
+
+        return updateService.updateIngredient(recipeId,ingredientId,ingredient);
 
 
     }

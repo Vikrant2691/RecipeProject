@@ -12,9 +12,11 @@ public interface RecipeService {
 
     RecipeCommand findById(Long aLong);
 
-    Set<Ingredient> getIngredient(Long aLong);
+    Set<Ingredient> getIngredients(Long aLong);
 
     RecipeCommand save(RecipeCommand recipeCommand);
 
     void deleteById(Long idToDelete);
+
+    Ingredient getIngredient(Long recipeId,Long ingredientId);
 }

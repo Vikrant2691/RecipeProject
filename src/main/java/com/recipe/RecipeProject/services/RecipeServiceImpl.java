@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -37,18 +38,36 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public RecipeCommand findById(Long aLong) {
 
-        return recipeToRecipeCommand.convert(Objects.requireNonNull(recipeRepository.findById(aLong).orElse(null)));
-//        return recipeRepository.findById(aLong).orElse(null);
+        Optional<Recipe> recipeCommandOptional = recipeRepository.findById(aLong);
+
+        if (recipeCommandOptional.isPresent())
+            throw new RuntimeException("Recipe not found");
+
+        return recipeToRecipeCommand.convert(recipeCommandOptional.get());
+
     }
 
     @Override
-    public Set<Ingredient> getIngredient(Long aLong) {
+    public Set<Ingredient> getIngredients(Long aLong) {
         return recipeRepository.findById(aLong).orElse(null).getIngredients();
     }
 
     @Override
+    public Ingredient getIngredient(Long recipeId, Long ingredientId) {
+        return getIngredients(recipeId)
+                .stream()
+                .filter(ingredient -> ingredient.getId().equals(ingredientId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
     public RecipeCommand save(RecipeCommand recipeCommand) {
-        return null;
+        Recipe recipeToBeSaved = Objects.requireNonNull(recipeCommandToRecipe.convert(recipeCommand));
+        Recipe recipeSaved = recipeRepository.save(recipeToBeSaved);
+
+
+        return recipeToRecipeCommand.convert(recipeSaved);
     }
 
     @Override

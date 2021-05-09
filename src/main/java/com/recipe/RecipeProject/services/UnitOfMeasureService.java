@@ -12,4 +12,6 @@ public interface UnitOfMeasureService {
     UnitOfMeasure getUnitOfMeasureByDescription();
 
     Optional<UnitOfMeasure> findByDescription(String description);
+
+    Optional<UnitOfMeasure> findById(Long Id);
 }

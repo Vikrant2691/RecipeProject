@@ -1,11 +1,13 @@
 package com.recipe.RecipeProject.bootstrap;
 
+import com.recipe.RecipeProject.command.RecipeCommand;
 import com.recipe.RecipeProject.converters.RecipeToRecipeCommand;
 import com.recipe.RecipeProject.model.*;
-import com.recipe.RecipeProject.repositories.UnitOfMeasureRepository;
+import com.recipe.RecipeProject.repositories.CategoryRepository;
+import com.recipe.RecipeProject.repositories.RecipeRepository;
 import com.recipe.RecipeProject.services.CategoryServiceImpl;
-import com.recipe.RecipeProject.services.RecipeServiceImpl;
 import com.recipe.RecipeProject.services.UnitOfMeasureServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -15,18 +17,18 @@ import java.util.Optional;
 import java.util.Set;
 
 @Component
+@Slf4j
 public class DataLoader implements CommandLineRunner {
 
 
     private final CategoryServiceImpl categoryService;
-    private final RecipeServiceImpl recipeService;
+    private final RecipeRepository recipeRepository;
     private final UnitOfMeasureServiceImpl unitOfMeasureService;
     private final RecipeToRecipeCommand recipeToRecipeCommand;
 
-
-    public DataLoader(CategoryServiceImpl categoryService, RecipeServiceImpl recipeService, UnitOfMeasureServiceImpl unitOfMeasureService, RecipeToRecipeCommand recipeToRecipeCommand) {
+    public DataLoader(CategoryServiceImpl categoryService, RecipeRepository recipeRepository, UnitOfMeasureServiceImpl unitOfMeasureService, RecipeToRecipeCommand recipeToRecipeCommand) {
         this.categoryService = categoryService;
-        this.recipeService = recipeService;
+        this.recipeRepository = recipeRepository;
         this.unitOfMeasureService = unitOfMeasureService;
         this.recipeToRecipeCommand = recipeToRecipeCommand;
     }
@@ -120,16 +122,18 @@ public class DataLoader implements CommandLineRunner {
                 "\n" +
                 "Read more: http://www.simplyrecipes.com/recipes/perfect_guacamole/#ixzz4jvoun5ws");
 
-        sausageSpaghetti.addIngredient(new Ingredient("ripe avocados", new BigDecimal(2), sausageSpaghetti, eachUom));
-        sausageSpaghetti.addIngredient(new Ingredient("Kosher salt", new BigDecimal(".5"), sausageSpaghetti, teapoonUom));
-        sausageSpaghetti.addIngredient(new Ingredient("fresh lime juice or lemon juice", new BigDecimal(2), sausageSpaghetti, tableSpoonUom));
-        sausageSpaghetti.addIngredient(new Ingredient("minced red onion or thinly sliced green onion", new BigDecimal(2), sausageSpaghetti, tableSpoonUom));
-        sausageSpaghetti.addIngredient(new Ingredient("serrano chiles, stems and seeds removed, minced", new BigDecimal(2), sausageSpaghetti, eachUom));
-        sausageSpaghetti.addIngredient(new Ingredient("Cilantro", new BigDecimal(2), sausageSpaghetti, tableSpoonUom));
-        sausageSpaghetti.addIngredient(new Ingredient("freshly grated black pepper", new BigDecimal(2), sausageSpaghetti, dashUom));
-        sausageSpaghetti.addIngredient(new Ingredient("ripe tomato, seeds and pulp removed, chopped", new BigDecimal(".5"), sausageSpaghetti, eachUom));
+        sausageSpaghetti.addIngredient(new Ingredient("ripe avocados", new BigDecimal(2), eachUom));
+        sausageSpaghetti.addIngredient(new Ingredient("Kosher salt", new BigDecimal(".5"), teapoonUom));
+        sausageSpaghetti.addIngredient(new Ingredient("fresh lime juice or lemon juice", new BigDecimal(2), tableSpoonUom));
+        sausageSpaghetti.addIngredient(new Ingredient("minced red onion or thinly sliced green onion", new BigDecimal(2), tableSpoonUom));
+        sausageSpaghetti.addIngredient(new Ingredient("serrano chiles, stems and seeds removed, minced", new BigDecimal(2), eachUom));
+        sausageSpaghetti.addIngredient(new Ingredient("Cilantro", new BigDecimal(2), tableSpoonUom));
+        sausageSpaghetti.addIngredient(new Ingredient("freshly grated black pepper", new BigDecimal(2), dashUom));
+        sausageSpaghetti.addIngredient(new Ingredient("ripe tomato, seeds and pulp removed, chopped", new BigDecimal(".5"), eachUom));
 
-        recipeService.save(recipeToRecipeCommand.convert(sausageSpaghetti));
+
+        recipeRepository.save(sausageSpaghetti);
+
 
 
         Recipe ovenRoastedSalmon = new Recipe();
@@ -158,27 +162,27 @@ public class DataLoader implements CommandLineRunner {
                 "If you want, remove the skin and center bones (if you are using steaks), and arrange on individual plates before serving. Garnish with fresh dill and lemon wedges.");
 
 
-        ovenRoastedSalmon.addIngredient(new Ingredient("Ancho Chili Powder", new BigDecimal(2), ovenRoastedSalmon, tableSpoonUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("Dried Oregano", new BigDecimal(1), ovenRoastedSalmon, teapoonUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("Dried Cumin", new BigDecimal(1), ovenRoastedSalmon, teapoonUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("Sugar", new BigDecimal(1), ovenRoastedSalmon, teapoonUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("Salt", new BigDecimal(".5"), ovenRoastedSalmon, teapoonUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("Clove of Garlic, Choppedr", new BigDecimal(1), ovenRoastedSalmon, eachUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("finely grated orange zestr", new BigDecimal(1), ovenRoastedSalmon, tableSpoonUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("fresh-squeezed orange juice", new BigDecimal(3), ovenRoastedSalmon, tableSpoonUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("Olive Oil", new BigDecimal(2), ovenRoastedSalmon, tableSpoonUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("boneless chicken thighs", new BigDecimal(4), ovenRoastedSalmon, tableSpoonUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("small corn tortillasr", new BigDecimal(8), ovenRoastedSalmon, eachUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("packed baby arugula", new BigDecimal(3), ovenRoastedSalmon, cupsUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("medium ripe avocados, slic", new BigDecimal(2), ovenRoastedSalmon, eachUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("radishes, thinly sliced", new BigDecimal(4), ovenRoastedSalmon, eachUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("cherry tomatoes, halved", new BigDecimal(".5"), ovenRoastedSalmon, pintUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("red onion, thinly sliced", new BigDecimal(".25"), ovenRoastedSalmon, eachUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("Roughly chopped cilantro", new BigDecimal(4), ovenRoastedSalmon, eachUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("cup sour cream thinned with 1/4 cup milk", new BigDecimal(4), ovenRoastedSalmon, cupsUom));
-        ovenRoastedSalmon.addIngredient(new Ingredient("lime, cut into wedges", new BigDecimal(4), ovenRoastedSalmon, eachUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("Ancho Chili Powder", new BigDecimal(2), tableSpoonUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("Dried Oregano", new BigDecimal(1), teapoonUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("Dried Cumin", new BigDecimal(1), teapoonUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("Sugar", new BigDecimal(1), teapoonUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("Salt", new BigDecimal(".5"), teapoonUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("Clove of Garlic, Choppedr", new BigDecimal(1), eachUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("finely grated orange zestr", new BigDecimal(1), tableSpoonUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("fresh-squeezed orange juice", new BigDecimal(3), tableSpoonUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("Olive Oil", new BigDecimal(2), tableSpoonUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("boneless chicken thighs", new BigDecimal(4), tableSpoonUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("small corn tortillasr", new BigDecimal(8), eachUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("packed baby arugula", new BigDecimal(3), cupsUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("medium ripe avocados, slic", new BigDecimal(2), eachUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("radishes, thinly sliced", new BigDecimal(4), eachUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("cherry tomatoes, halved", new BigDecimal(".5"), pintUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("red onion, thinly sliced", new BigDecimal(".25"), eachUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("Roughly chopped cilantro", new BigDecimal(4), eachUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("cup sour cream thinned with 1/4 cup milk", new BigDecimal(4), cupsUom));
+        ovenRoastedSalmon.addIngredient(new Ingredient("lime, cut into wedges", new BigDecimal(4), eachUom));
 
-        recipeService.save(recipeToRecipeCommand.convert(ovenRoastedSalmon));
+        recipeRepository.save(ovenRoastedSalmon);
 
     }
 }
